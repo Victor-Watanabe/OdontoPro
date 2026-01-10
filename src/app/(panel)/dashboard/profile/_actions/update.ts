@@ -3,6 +3,7 @@
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { error, timeStamp } from "console";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 const fomrSchema = z.object({
@@ -39,6 +40,8 @@ export async function updateProfile(formData: FomrSchema) {
       },
     });
 
+    revalidatePath("/dashboard/profile");
+
     return {
       data: "clinica atualizada com sucesso!",
     };
@@ -48,12 +51,4 @@ export async function updateProfile(formData: FomrSchema) {
       error: "Falha ao tentar atualizar a clinica",
     };
   }
-
-  if (!schema.success) {
-    return {
-      error: "Preencha todos os campos",
-    };
-  }
-
-  console.log("PASSOU: ", formData);
 }
