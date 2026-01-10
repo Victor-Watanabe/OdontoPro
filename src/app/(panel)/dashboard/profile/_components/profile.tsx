@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react";
-import { useProfileForm } from "./profile-form"
+import { useProfileForm, ProfileFormData } from "./profile-form"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -13,13 +13,44 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Prisma } from "@/generated/prisma/client";
+import { updateProfile } from "../_actions/update";
 
-export function ProfileContent(){
+type UserWithSubscription = Prisma.UserGetPayload<{
+    include: {
+        subscription: true
+    }
+}>
 
-    const [selectedHours, setSelectedHours] = useState<string[]>([])
+interface ProfileContentProps{
+    user: UserWithSubscription;
+}
 
-    const form = useProfileForm();
+export function ProfileContent({ user }: ProfileContentProps){
+    console.log(user);
+
+    const [selectedHours, setSelectedHours] = useState<string[]>(user.times ?? [])
+    const [dialogIsOpen, setDialogIsOpen] = useState(false)
+
+    const form = useProfileForm({
+        name: user.name,
+        addres: user.address,
+        phone: user.phone,
+        status: user.status,
+        timeZone: user.timeZone
+    });
    
+    const timeZones = Intl.supportedValuesOf("timeZone").filter((zone) => 
+        zone.startsWith("America/Sao_Paulo") || 
+        zone.startsWith("America/Fortaleza") || 
+        zone.startsWith("America/Recife") || 
+        zone.startsWith("America/Bahia") || 
+        zone.startsWith("America/Belem") || 
+        zone.startsWith("America/Manaus") || 
+        zone.startsWith("America/Cuiaba") || 
+        zone.startsWith("America/Boa_Vista") 
+        );
+    
     function generateTimeSlots() : string[]{
         const hours : string[] = [];
 
@@ -40,10 +71,24 @@ export function ProfileContent(){
         [...prev, hour].sort()) 
     }
 
+    async function onSubmit(values: ProfileFormData){
+        const profileData = {
+            ...values, times: selectedHours
+        }
+        const response = await updateProfile({
+            name: values.name,
+            address: values.address,
+            status: values.status === "active" ? true : false,
+            phone: values.phone,
+            timeZone: values.timeZone,
+            times: selectedHours || []
+            })
+    }
+
     return(
         <div className="mx:auto">
             <Form {...form}>
-                <form>
+                <form onSubmit={form.handleSubmit(onSubmit)}>
                     <Card>
                         <CardHeader>
                             <CardTitle>Meu Perfil</CardTitle>
@@ -52,7 +97,7 @@ export function ProfileContent(){
                         <div className=" flex justify-center">
                             <div className="bg-gray-200 relative h-40 w-40 rounded-full overflow-hidden">
                                 <Image
-                                src={imgTest}
+                                src={user.image ? user.image : imgTest}
                                 alt="foto da clinica"
                                 fill
                                 className="object-cover"/>
@@ -129,7 +174,7 @@ export function ProfileContent(){
                                     Configurar Horários da Clínica
                                 </Label>
 
-                                <Dialog>
+                                <Dialog open={dialogIsOpen} onOpenChange={setDialogIsOpen}>
                                     <DialogTrigger asChild>
                                         <Button variant="outline" className="w-full justify-between">
                                             Clique aqui para Selecionar os Horários
@@ -159,10 +204,45 @@ export function ProfileContent(){
                                                 ))}
                                             </div>
                                         </section>
+                                        <Button 
+                                        className="w-full"
+                                        onClick={() => setDialogIsOpen(false)}
+                                        >
+                                            Salvar Horários
+                                        </Button>
                                     </DialogContent>
                                 </Dialog>
                             </div>
+                                <FormField
+                            control={form.control}
+                            name="timeZone"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="font-semibold">Selecione o Fuso Horário</FormLabel>
+                                    <FormControl>
+                                        <Select 
+                                        onValueChange = {field.onChange}
+                                        defaultValue = {field.value}
+                                        >
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Selecione o seu Fuso Horário"/>
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {timeZones.map((zone) => 
+                                                <SelectItem key={zone} value={zone}>
+                                                    {zone}
+                                                </SelectItem>)}
+                                            </SelectContent>
+                                        </Select>
+                                    </FormControl>
+                                </FormItem>
+                            )}/>
 
+                            <Button 
+                            type="submit"
+                            className="w-full bg-emerald-500 hover:bg-emerald-400">
+                                Salvar Alterações
+                            </Button>
                         </div>
                         </CardContent>
                     </Card>                
