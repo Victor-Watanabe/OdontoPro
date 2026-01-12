@@ -1,8 +1,15 @@
+import getSession from "@/lib/getSession"
+import { redirect } from "next/navigation"
+import { ServicesContent } from "./_components/service-content"
 
-export default function Services(){
+export default async function Services(){
+    const session = await getSession()
+
+    if(!session) {
+        redirect('/')
+    }
+
     return(
-    <div>
-        <h1>teste de serviços</h1>
-    </div>
-)
+        <ServicesContent userId ={session.user.id!}/>
+    )
 }
