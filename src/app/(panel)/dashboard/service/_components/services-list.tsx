@@ -18,10 +18,16 @@ import {
     CardTitle
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
+import { Pencil, Plus, X } from "lucide-react"
 import { DialogService } from "./dialog-services"
+import { Service } from "@/generated/prisma/client"
+import { formatCurrency } from "@/utils/formatCurrency"
 
-export function ServicesList(){
+interface ServicesListProps{
+    services: Service[]
+}
+
+export function ServicesList( { services } : ServicesListProps){
     
     const [isDialogOpen, setIsDialogOpen] = useState(false)
 
@@ -42,8 +48,38 @@ export function ServicesList(){
                         <DialogService
                         closeModal = { () => {setIsDialogOpen(false);}}/>
                     </DialogContent>
-
                 </CardHeader>
+
+                <CardContent>
+                    <section className="space-y-4 mt-3">
+                        {services.map( services => (
+                            <article key={services.id} 
+                            className="flex items-center justify-between">
+                                <div className="flex items-center space-x-2">
+                                    <span className="font-semibold"> {services.name}</span>
+                                    <span className="text-gray-500"> - </span>
+                                    <span> {formatCurrency((services.price / 100))}</span>
+                                </div>
+                                <div>
+                                    <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={()=> {}}>
+                                        <Pencil className="w-4h-4"/>
+                                    </Button>
+                                    <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={()=> {}}>
+                                        <X className="w-4h-4"/>
+                                    </Button>
+                                </div>
+                            </article>
+                        ))
+                        }
+                    </section>
+                </CardContent>
+
             </Card>
 
             </section>
