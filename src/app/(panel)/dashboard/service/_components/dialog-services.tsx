@@ -7,13 +7,48 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
  import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { convertRealtoCents } from "@/utils/convertCurrency"
+import { createNewService } from "../_actions/create-service"
+import { toast } from "sonner"
+import { useState } from "react"
 
-export function DialogService(){
+interface DiaLogServiceProps{
+    closeModal : () => void;
+}
+
+export function DialogService({closeModal} : DiaLogServiceProps){
     
     const form = useDialogServiceForm()
+    const [loading, setLoading] = useState(false);
 
     async function onSubmit(values : DialogServiceFormData){
+        setLoading(true)
         const priceInCents = convertRealtoCents(values.price)
+        const hours = parseInt(values.hours) || 0;
+        const minutes = parseInt(values.minutes) || 0;
+
+        // converter horas e minutos em total de minutos.
+        const duration = (hours*60) + minutes;
+
+        const response = await createNewService({
+            name: values.name,
+            price: priceInCents,
+            duration: duration
+        })
+
+        setLoading(false);
+
+
+        if(response.error){
+            toast.error(response.error)
+            return;
+        }
+        toast.success("Serviço Cadastrado com Sucesso!")
+        handleCloseModal();
+    }
+    
+    function handleCloseModal(){
+        form.reset();
+        closeModal();
     }
 
     function changeCurrency(event : React.ChangeEvent<HTMLInputElement>){
@@ -30,6 +65,7 @@ export function DialogService(){
         form.setValue("price", value)
     }
 
+    
     return(
         <>
             <DialogHeader>
@@ -123,8 +159,10 @@ export function DialogService(){
                             </FormField>
                         </div>
 
-                        <Button type="submit" className="w-full font-semibold text-white hover:bg-emerald-500">
-                            Adicionar Serviço
+                        <Button type="submit" 
+                        className="w-full font-semibold text-white hover:bg-emerald-500"
+                        disabled={loading}>
+                            {loading ? "Cadastrando..." : "Adicionar Serviço"}
                         </Button>
                 </form>
 
