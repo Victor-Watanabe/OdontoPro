@@ -33,6 +33,8 @@ interface ServicesListProps{
 export function ServicesList({ services } : ServicesListProps){
     
     const [isDialogOpen, setIsDialogOpen] = useState(false)
+    const [editingService, setEditingService] = useState< null | Service>(null)
+
 
     async function handleDeleteService(serviceId : string){
         const response = await deleteService({ serviceId:serviceId })
@@ -43,6 +45,11 @@ export function ServicesList({ services } : ServicesListProps){
         }
         
         toast.success(response.data)
+    }
+
+    function handleEditService( service: Service ){
+        setEditingService(service);
+        setIsDialogOpen(true)
     }
 
     return(
@@ -58,9 +65,24 @@ export function ServicesList({ services } : ServicesListProps){
                         </Button>
                     </DialogTrigger>
 
-                    <DialogContent>
+                    <DialogContent
+                        onInteractOutside={(e)=> {
+                            e.preventDefault();
+                            setIsDialogOpen(false);
+                            setEditingService(null);
+                        }}>
                         <DialogService
-                        closeModal = { () => {setIsDialogOpen(false);}}/>
+                        closeModal = { () => {
+                            setIsDialogOpen(false);
+                            setEditingService(null);
+                        }}
+                        serviceId = { editingService ? editingService.id : undefined }
+                        initialValues = { editingService ? {
+                            name: editingService.name,
+                            price: (editingService.price / 100).toFixed(2).replace(".", ","),
+                            hours: Math.floor(editingService.duration / 60).toString(),
+                            minutes: (editingService.duration % 60).toString()
+                        } : undefined }/>
                     </DialogContent>
                 </CardHeader>
 
@@ -78,7 +100,7 @@ export function ServicesList({ services } : ServicesListProps){
                                     <Button
                                     variant="ghost"
                                     size="icon"
-                                    onClick={()=> {}}>
+                                    onClick={()=> handleEditService(services)}>
                                         <Pencil className="w-4h-4"/>
                                     </Button>
                                     <Button
