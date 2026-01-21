@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { error } from "console";
 import { success, z } from "zod";
+import { revalidatePath } from "next/cache";
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "O nome do serviço é obrigatório" }),
@@ -37,6 +38,8 @@ export async function createNewService(formData: FromSchema) {
         userId: session?.user?.id,
       },
     });
+
+    revalidatePath("/dashboard/service");
 
     return { data: newService };
   } catch (err) {
