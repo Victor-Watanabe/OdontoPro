@@ -19,6 +19,7 @@ import { createNewAppointment } from "../_action/create-appointment"
 import { toast } from "sonner"
 import { Slot } from "@radix-ui/react-slot"
 
+// Pega os dados de User no banco e traz o subscription e services junto já com as typagens.
 type UserWithServiceAndSubscription = Prisma.UserGetPayload<{
     include: {
         subscription: true,
@@ -26,10 +27,13 @@ type UserWithServiceAndSubscription = Prisma.UserGetPayload<{
     }
 }>
 
+// Passando as informações ao objeto clinic e obrigando a tipagem.
 interface ScheduleContentProps{
     clinic: UserWithServiceAndSubscription
 }
 
+// Obriga que o objeto "TimeSlot" tenha obrigatóriamente o time 
+// em formato string e available em formato booleano
 export interface TimeSlot {
     time: string;
     available: boolean;
@@ -62,6 +66,8 @@ export function ScheduleContent({clinic} : ScheduleContentProps){
         }
     },[clinic.id])
 
+    // Consulta os horários bloqueados e os horários da clinica, para verificar se 
+    // estão disponíveis
     useEffect(() => {
         if(selectedDate){
             fetchBlockedTimes(selectedDate).then((blocked) => {

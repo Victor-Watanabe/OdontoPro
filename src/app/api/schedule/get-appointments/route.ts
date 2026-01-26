@@ -1,3 +1,6 @@
+// Serve para Pegar o ID do Usuário e a data do agendamento selecionada, assim
+// descobrindo se há algum agendamento no dia!
+
 import prisma from "@/lib/prisma";
 import { log } from "console";
 import { NextResponse, type NextRequest } from "next/server";

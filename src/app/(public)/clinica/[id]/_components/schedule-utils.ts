@@ -1,3 +1,7 @@
+//Funcionalidade de bloquear agendamento com data retroativa
+
+import { ReceiptRussianRuble } from "lucide-react";
+
 export function isToday(date: Date) {
   const now = new Date();
 
