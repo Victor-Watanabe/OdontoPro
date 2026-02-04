@@ -221,6 +221,7 @@ export function ScheduleContent({clinic} : ScheduleContentProps){
                                 onChange={(date) => {
                                     if(date){
                                         field.onChange(date)
+                                        setSelectedTime("")
                                     }
                                 }}/>
                             </FormControl>
@@ -235,7 +236,9 @@ export function ScheduleContent({clinic} : ScheduleContentProps){
                         <FormItem className="">
                             <FormLabel className="font-semibold">Selecione o Serviço:</FormLabel>
                             <FormControl>
-                                <Select onValueChange={field.onChange}>
+                                <Select onValueChange={(value) => {field.onChange(value)
+                                    setSelectedTime("")
+                                }}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Selecione um Serviço"/>
                                     </SelectTrigger>
