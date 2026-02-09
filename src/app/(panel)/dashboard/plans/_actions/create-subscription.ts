@@ -4,7 +4,6 @@ import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { stripe } from "@/utils/stripe";
 import { Plan } from "@/generated/prisma/client";
-import { url } from "inspector";
 
 interface SubscriptionProps {
   type: Plan;
@@ -12,13 +11,12 @@ interface SubscriptionProps {
 
 export async function createSubscription({ type }: SubscriptionProps) {
   const session = await auth();
-
   const userId = session?.user?.id;
 
-  if (!session) {
+  if (!userId) {
     return {
       sessionId: "",
-      error: "Falha ao ativar plano",
+      error: "Falha ao ativar plano.",
     };
   }
 
@@ -31,18 +29,17 @@ export async function createSubscription({ type }: SubscriptionProps) {
   if (!findUser) {
     return {
       sessionId: "",
-      error: "Falha ao ativar plano",
+      error: "Falha ao ativar plano.",
     };
   }
 
   let customerId = findUser.stripe_customer_id;
 
   if (!customerId) {
+    // Caso o user não tenha um stripe_customer_id então criamos ele como cliente
     const stripeCustomer = await stripe.customers.create({
-      email: findUser.email ?? undefined, // ✔️ ajuste mínimo
+      email: findUser.email ?? undefined,
     });
-
-    customerId = stripeCustomer.id;
 
     await prisma.user.update({
       where: {
@@ -52,19 +49,22 @@ export async function createSubscription({ type }: SubscriptionProps) {
         stripe_customer_id: stripeCustomer.id,
       },
     });
+
+    customerId = stripeCustomer.id;
   }
 
+  // CRIAR O CHECKOUT
   try {
     const stripeCheckoutSession = await stripe.checkout.sessions.create({
-      customer: customerId!,
+      customer: customerId,
       payment_method_types: ["card"],
       billing_address_collection: "required",
       line_items: [
         {
           price:
             type === "BASIC"
-              ? process.env.STRIPE_PLAN_BASIC!
-              : process.env.STRIPE_PLAN_PROFESSIONAL!,
+              ? process.env.STRIPE_PLAN_BASIC
+              : process.env.STRIPE_PLAN_PROFESSIONAL,
           quantity: 1,
         },
       ],
@@ -73,8 +73,8 @@ export async function createSubscription({ type }: SubscriptionProps) {
       },
       mode: "subscription",
       allow_promotion_codes: true,
-      success_url: process.env.STRIPE_SUCESS_URL!,
-      cancel_url: process.env.STRIPE_CANCEL_URL!,
+      success_url: process.env.STRIPE_SUCCESS_URL,
+      cancel_url: process.env.STRIPE_CANCEL_URL,
     });
 
     return {
@@ -82,11 +82,11 @@ export async function createSubscription({ type }: SubscriptionProps) {
       url: stripeCheckoutSession.url,
     };
   } catch (err) {
-    console.log("Erro ao criar o checkout");
+    console.log("ERRO AO CRIAR CHECKOUT");
     console.log(err);
     return {
       sessionId: "",
-      error: "Falha ao ativar plano",
+      error: "Falha ao ativar plano.",
     };
   }
 }
