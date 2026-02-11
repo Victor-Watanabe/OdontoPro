@@ -61,13 +61,13 @@ export const POST = async (request: Request) => {
           type as Plan,
         );
       }
-
+      revalidatePath("/dashboard/plans");
+      console.log("O WEBHOOK FUNCIONOU");
       break;
 
     default:
       console.log("Evento não tratado: ", event.type);
   }
 
-  revalidatePath("/dashboard/plans");
   return NextResponse.json({ received: true });
 };
