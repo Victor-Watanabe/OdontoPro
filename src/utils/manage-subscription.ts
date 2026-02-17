@@ -49,6 +49,7 @@ export async function manageSubscription(
       await prisma.subscription.create({
         data: subscriptionData,
       });
+      console.log("DEU CERTO!");
     } catch (err) {
       console.log("Erro ao salvar assinatura");
       console.log(err);

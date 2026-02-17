@@ -36,7 +36,6 @@ export async function createSubscription({ type }: SubscriptionProps) {
   let customerId = findUser.stripe_customer_id;
 
   if (!customerId) {
-    // Caso o user não tenha um stripe_customer_id então criamos ele como cliente
     const stripeCustomer = await stripe.customers.create({
       email: findUser.email ?? undefined,
     });
