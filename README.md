@@ -1,36 +1,170 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+🦷 Dental SaaS — Gestão de Clínicas Odontológicas
 
-## Getting Started
+Micro-SaaS desenvolvido com Next.js + TypeScript para gestão de clínicas odontológicas.
+A plataforma permite cadastro de clínicas, gestão de pacientes, agendamentos, serviços e planos de assinatura recorrente.
 
-First, run the development server:
+Projeto construído como parte de um estudo prático de arquitetura full-stack moderna, autenticação social e billing com Stripe.
 
-```bash
+🚀 Tecnologias
+
+Next.js (App Router)
+
+React.js
+
+TypeScript / JavaScript
+
+Tailwind CSS
+
+shadcn/ui
+
+Prisma ORM
+
+PostgreSQL (Neon)
+
+Stripe (assinaturas)
+
+Cloudinary (upload de mídia)
+
+Auth.js (Google + GitHub OAuth)
+
+Zod (validação)
+
+✨ Funcionalidades
+
+Cadastro e gestão de clínicas
+
+Cadastro de pacientes
+
+Agenda odontológica
+
+Catálogo de serviços e preços
+
+Upload de imagens/arquivos
+
+Planos de assinatura recorrente
+
+Autenticação social (Google/GitHub)
+
+Controle de acesso por plano
+
+📦 Instalação
+git clone https://github.com/seu-usuario/dental-saas.git
+cd dental-saas
+npm install
+
+⚙️ Configuração de Ambiente (.env)
+
+Para executar o projeto, crie um arquivo .env na raiz com as seguintes variáveis:
+
+DATABASE_URL=
+
+AUTH_SECRET=
+
+AUTH_GITHUB_ID=
+AUTH_GITHUB_SECRET=
+
+AUTH_GOOGLE_ID=
+AUTH_GOOGLE_SECRET=
+
+NEXT_PUBLIC_URL=http://localhost:3000
+
+NEXT_PUBLIC_STRIPE_PUBLIC_KEY=
+STRIPE_SECRET_KEY=
+STRIPE_SECRET_WEBHOOK_KEY=
+
+STRIPE_PLAN_BASIC=
+STRIPE_PLAN_PROFESSIONAL=
+
+STRIPE_SUCCESS_URL=http://localhost:3000/dashboard/plans
+STRIPE_CANCEL_URL=http://localhost:3000/dashboard/plans
+
+CLOUDINARY_NAME=
+CLOUDINARY_KEY=
+CLOUDINARY_SECRET=
+
+
+⚠️ Importante: nunca publique suas chaves reais no repositório.
+Use variáveis seguras no deploy (Vercel, Railway, etc.).
+
+🗄️ Banco de Dados
+
+Executar migrations e gerar client Prisma:
+
+npx prisma generate
+npx prisma migrate dev
+
+
+Opcional: visualizar dados
+
+npx prisma studio
+
+💳 Integração Stripe
+
+O projeto utiliza Stripe Checkout + Webhooks para controle de planos.
+
+Passos:
+
+Criar produtos e preços no Stripe
+
+Inserir IDs em:
+
+STRIPE_PLAN_BASIC
+STRIPE_PLAN_PROFESSIONAL
+
+
+Configurar webhook apontando para:
+
+/api/webhooks/stripe
+
+☁️ Upload de Arquivos
+
+Uploads são gerenciados via Cloudinary.
+
+Configurar:
+
+CLOUDINARY_NAME
+CLOUDINARY_KEY
+CLOUDINARY_SECRET
+
+🔐 Autenticação
+
+Login social via Auth.js:
+
+Google OAuth
+
+GitHub OAuth
+
+Configurar credenciais no Google Cloud e GitHub Developer Settings.
+
+▶️ Executar Projeto
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Acesse:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+http://localhost:3000
 
-## Learn More
+📚 Objetivo do Projeto
 
-To learn more about Next.js, take a look at the following resources:
+Este projeto foi desenvolvido como estudo completo de:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Arquitetura SaaS multi-tenant
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Billing recorrente
 
-## Deploy on Vercel
+Autenticação moderna
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Upload e mídia
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+ORM + banco serverless
+
+UI escalável com componentes
+
+👨‍💻 Autor
+
+Victor Watanabe
+Frontend Developer (React / Next.js)
+
+📄 Licença
+
+Projeto para fins educacionais.
