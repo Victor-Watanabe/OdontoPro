@@ -57,35 +57,35 @@ Projeto construído como parte de um estudo prático de arquitetura full-stack m
 ## 📦 Instalação
 
 ### Clone o repositório:
-
-bash
--git clone https://github.com/seu-usuario/dental-saas.git
--cd dental-saas
--npm install
+```
+git clone https://github.com/seu-usuario/dental-saas.git
+cd dental-saas
+npm install
+```
 
 ## ⚙️ Configuração de Ambiente (.env)
 
 Para executar o projeto, crie um arquivo .env na raiz com as seguintes variáveis:
 
-- DATABASE_URL=
-- AUTH_SECRET=
-- AUTH_GITHUB_ID=
-- AUTH_GITHUB_SECRET=
-- AUTH_GOOGLE_ID=
-- AUTH_GOOGLE_SECRET=
-- NEXT_PUBLIC_URL=http://localhost:3000
-- NEXT_PUBLIC_STRIPE_PUBLIC_KEY=
-- STRIPE_SECRET_KEY=
-- STRIPE_SECRET_WEBHOOK_KEY=
-- STRIPE_PLAN_BASIC=
-- STRIPE_PLAN_PROFESSIONAL=
-- STRIPE_SUCCESS_URL=http://localhost:3000/dashboard/plans
-- STRIPE_CANCEL_URL=http://localhost:3000/dashboard/plans
-- CLOUDINARY_NAME=
-- CLOUDINARY_KEY=
-- CLOUDINARY_SECRET=
-
-
+```
+DATABASE_URL=
+AUTH_SECRET=
+AUTH_GITHUB_ID=
+AUTH_GITHUB_SECRET=
+AUTH_GOOGLE_ID=
+AUTH_GOOGLE_SECRET=
+NEXT_PUBLIC_URL=http://localhost:3000
+NEXT_PUBLIC_STRIPE_PUBLIC_KEY=
+STRIPE_SECRET_KEY=
+STRIPE_SECRET_WEBHOOK_KEY=
+STRIPE_PLAN_BASIC=
+STRIPE_PLAN_PROFESSIONAL=
+STRIPE_SUCCESS_URL=http://localhost:3000/dashboard/plans
+STRIPE_CANCEL_URL=http://localhost:3000/dashboard/plans
+CLOUDINARY_NAME=
+CLOUDINARY_KEY=
+CLOUDINARY_SECRET=
+```
 ⚠️ Importante: nunca publique suas chaves reais no repositório.
 Use variáveis seguras no deploy (Vercel, Railway, etc.).
 
@@ -93,14 +93,15 @@ Use variáveis seguras no deploy (Vercel, Railway, etc.).
 
 Executar migrations e gerar client Prisma:
 
-- npx prisma generate
-- npx prisma migrate dev
-
+```
+npx prisma generate
+npx prisma migrate dev
+```
 
 Opcional: visualizar dados
-
+```
 npx prisma studio
-
+```
 ## 💳 Integração Stripe
 
 O projeto utiliza Stripe Checkout + Webhooks para controle de planos.
@@ -110,10 +111,10 @@ O projeto utiliza Stripe Checkout + Webhooks para controle de planos.
 Criar produtos e preços no Stripe
 
 Inserir IDs em:
-
-- STRIPE_PLAN_BASIC
-- STRIPE_PLAN_PROFESSIONAL
-
+```
+STRIPE_PLAN_BASIC
+STRIPE_PLAN_PROFESSIONAL
+```
 Configurar webhook apontando para:
 
 /api/webhooks/stripe
@@ -123,11 +124,11 @@ Configurar webhook apontando para:
 Uploads são gerenciados via Cloudinary.
 
 Configurar:
-
-- CLOUDINARY_NAME
-- CLOUDINARY_KEY
-- CLOUDINARY_SECRET 
-
+```
+CLOUDINARY_NAME
+CLOUDINARY_KEY
+CLOUDINARY_SECRET 
+```
 ## 🔐 Autenticação
 
 Login social via Auth.js:
@@ -138,9 +139,9 @@ Login social via Auth.js:
 Configurar credenciais no Google Cloud e GitHub Developer Settings.
 
 ## ▶️ Executar Projeto
-
+```
 npm run dev
-
+```
 Acesse:
 
 http://localhost:3000
